@@ -55,7 +55,7 @@ public class Ob20Emitter : IStandardEmitter
             verification = new
             {
                 // type = "HostedBadge"
-                url = "https://openbadgeapi-fufccffmd5ddhpc3.southcentralus-01.azurewebsites.net/api/verify?code=Mg-EOSal4MqsAEKJ4Zxhfq66LlbI59bN7jgtldCJXgi5AzFuwsV8uA=="
+                url = "https://openbadgeapi-fufccffmd5ddhpc3.southcentralus-01.azurewebsites.net/api/verify"
             },
             issuedOn = (award.IssuedOn ?? DateTimeOffset.UtcNow).ToString("o"),
             expires = award.Expires?.ToString("o"),
