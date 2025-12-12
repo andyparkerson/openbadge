@@ -11,6 +11,9 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
+        // Register HTTP client for external requests
+        services.AddHttpClient();
+
         // Register services
         services.AddSingleton<PngBadgeBaker>();
         services.AddSingleton<PublishingService>();
