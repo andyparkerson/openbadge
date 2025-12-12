@@ -168,7 +168,43 @@ curl http://localhost:7071/api/assertion/{id}
 }
 ```
 
-### 3. Health Check
+### 3. Verify a Badge
+
+You can verify a badge either by pointing the verifier at a published assertion URL, or by uploading a baked PNG. The verification endpoint is `POST /api/verify` and requires a function key when running with function-level auth.
+
+- Verify by assertion URL (JSON body):
+
+```bash
+curl -X POST http://localhost:7071/api/verify \
+  -H "Content-Type: application/json" \
+  -H "x-functions-key: <your-function-key>" \
+  -d '{"assertionUrl":"http://localhost:7071/api/assertion/{id}"}'
+```
+
+- Verify by baked PNG (multipart/form-data):
+
+```bash
+curl -X POST http://localhost:7071/api/verify \
+  -H "x-functions-key: <your-function-key>" \
+  -F "png=@path/to/baked-badge.png"
+```
+
+Response (current implementation):
+
+The `Verify` function is currently a stub. It responds with a JSON object similar to:
+
+```json
+{
+  "message": "Verification endpoint is planned but not yet implemented",
+  "status": "stub",
+  "note": "Future implementation will validate Open Badges 2.0 and 3.0 assertions",
+  "reference": "https://github.com/1EdTech/openbadges-validator-core"
+}
+```
+
+When implemented, the verifier will accept either an assertion URL or a baked PNG, extract or fetch the assertion, validate its structure and evidence, and (for OB 3.0) verify cryptographic proofs.
+
+### 4. Health Check
 
 ```bash
 curl http://localhost:7071/api/health
