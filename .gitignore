@@ -69,6 +69,3 @@ __azurite_db*__.json
 # Temporary files
 *.tmp
 *.temp
-
-# Exclude OpenBadge.Tests from main build
-OpenBadge.Tests/
