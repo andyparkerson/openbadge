@@ -1,0 +1,40 @@
+{
+  "standard": "ob2",
+  "award": {
+    "issuer": {
+      "id": "example-university",
+      "name": "Example University",
+      "url": "https://example.edu",
+      "email": "badges@example.edu",
+      "description": "A leading institution in digital credential innovation",
+      "image": "https://example.edu/logo.png"
+    },
+    "badgeClass": {
+      "id": "data-science-certificate",
+      "name": "Data Science Professional Certificate",
+      "description": "Awarded to individuals who have completed the comprehensive Data Science program, demonstrating proficiency in statistical analysis, machine learning, and data visualization.",
+      "image": "https://example.edu/badges/data-science.png",
+      "issuer": "example-university",
+      "criteria": [
+        "Completed all required coursework with a grade of B or higher",
+        "Successfully completed a capstone project",
+        "Demonstrated practical skills through portfolio submissions",
+        "Passed the final comprehensive examination"
+      ],
+      "tags": [
+        "data-science",
+        "certificate",
+        "professional-development",
+        "analytics"
+      ]
+    },
+    "recipient": {
+      "type": "email",
+      "identity": "jane.doe@example.com",
+      "hashed": false
+    },
+    "issuedOn": "2024-12-12T00:00:00Z",
+    "expires": "2029-12-12T00:00:00Z",
+    "evidence": "https://example.edu/portfolios/jane-doe/data-science-capstone"
+  }
+}
