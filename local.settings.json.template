@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "BlobStorageConnectionString": "UseDevelopmentStorage=true",
+    "PublicContainerName": "public",
+    "BakedBadgesContainerName": "badges-baked",
+    "BaseUrl": "https://issuer.example.org"
+  }
+}
