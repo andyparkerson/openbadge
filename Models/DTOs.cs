@@ -70,3 +70,29 @@ public class BakeResponse
     public string AssertionUrl { get; set; } = string.Empty;
     public string BakedPngUrl { get; set; } = string.Empty;
 }
+
+/// <summary>
+/// Response from verifying a badge
+/// </summary>
+public class VerifyResponse
+{
+    public bool Valid { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public List<string> Errors { get; set; } = new();
+    public List<string> Warnings { get; set; } = new();
+    public VerificationDetails? Details { get; set; }
+}
+
+/// <summary>
+/// Details about the verified badge
+/// </summary>
+public class VerificationDetails
+{
+    public string? AssertionId { get; set; }
+    public string? BadgeClassName { get; set; }
+    public string? IssuerName { get; set; }
+    public string? RecipientIdentity { get; set; }
+    public DateTimeOffset? IssuedOn { get; set; }
+    public DateTimeOffset? Expires { get; set; }
+    public bool? IsExpired { get; set; }
+}
