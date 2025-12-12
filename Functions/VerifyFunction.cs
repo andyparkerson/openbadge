@@ -16,7 +16,11 @@ public class VerifyFunction
 {
     private readonly ILogger<VerifyFunction> _logger;
     private readonly PngBadgeBaker _badgeBaker;
-    private readonly HttpClient _httpClient;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private static readonly JsonSerializerOptions JsonOptions = new() 
+    { 
+        PropertyNameCaseInsensitive = true 
+    };
 
     public VerifyFunction(
         ILogger<VerifyFunction> logger,
@@ -25,7 +29,7 @@ public class VerifyFunction
     {
         _logger = logger;
         _badgeBaker = badgeBaker;
-        _httpClient = httpClientFactory.CreateClient();
+        _httpClientFactory = httpClientFactory;
     }
 
     [Function("Verify")]
@@ -73,7 +77,7 @@ public class VerifyFunction
                         _logger.LogError(ex, "Error extracting assertion from PNG");
                         response.Valid = false;
                         response.Message = "Invalid PNG file";
-                        response.Errors.Add($"Failed to extract assertion from PNG: {ex.Message}");
+                        response.Errors.Add("Failed to extract assertion from PNG");
                         return new OkObjectResult(response);
                     }
                 }
@@ -97,8 +101,7 @@ public class VerifyFunction
                 {
                     try
                     {
-                        var requestData = JsonSerializer.Deserialize<Dictionary<string, string>>(body, 
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        var requestData = JsonSerializer.Deserialize<Dictionary<string, string>>(body, JsonOptions);
                         
                         if (requestData != null && requestData.TryGetValue("url", out var url))
                         {
@@ -152,13 +155,14 @@ public class VerifyFunction
         try
         {
             _logger.LogInformation("Fetching assertion from URL: {Url}", url);
-            var assertionJson = await _httpClient.GetStringAsync(uri);
+            using var httpClient = _httpClientFactory.CreateClient();
+            var assertionJson = await httpClient.GetStringAsync(uri);
             return assertionJson;
         }
         catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "Error fetching assertion from URL");
-            response.Errors.Add($"Failed to fetch assertion from URL: {ex.Message}");
+            response.Errors.Add("Failed to fetch assertion from URL");
             return null;
         }
     }
@@ -270,7 +274,8 @@ public class VerifyFunction
         try
         {
             _logger.LogInformation("Fetching badge class from: {BadgeUrl}", badgeUrl);
-            var badgeJson = await _httpClient.GetStringAsync(badgeUrl);
+            using var httpClient = _httpClientFactory.CreateClient();
+            var badgeJson = await httpClient.GetStringAsync(badgeUrl);
             
             using var doc = JsonDocument.Parse(badgeJson);
             var root = doc.RootElement;
@@ -301,12 +306,12 @@ public class VerifyFunction
         catch (HttpRequestException ex)
         {
             _logger.LogWarning(ex, "Could not fetch badge class");
-            response.Warnings.Add($"Could not verify badge class: {ex.Message}");
+            response.Warnings.Add("Could not verify badge class");
         }
         catch (JsonException ex)
         {
             _logger.LogWarning(ex, "Invalid badge class JSON");
-            response.Warnings.Add($"Invalid badge class JSON: {ex.Message}");
+            response.Warnings.Add("Invalid badge class JSON");
         }
     }
 
@@ -315,7 +320,8 @@ public class VerifyFunction
         try
         {
             _logger.LogInformation("Fetching issuer from: {IssuerUrl}", issuerUrl);
-            var issuerJson = await _httpClient.GetStringAsync(issuerUrl);
+            using var httpClient = _httpClientFactory.CreateClient();
+            var issuerJson = await httpClient.GetStringAsync(issuerUrl);
             
             using var doc = JsonDocument.Parse(issuerJson);
             var root = doc.RootElement;
@@ -329,12 +335,12 @@ public class VerifyFunction
         catch (HttpRequestException ex)
         {
             _logger.LogWarning(ex, "Could not fetch issuer");
-            response.Warnings.Add($"Could not verify issuer: {ex.Message}");
+            response.Warnings.Add("Could not verify issuer");
         }
         catch (JsonException ex)
         {
             _logger.LogWarning(ex, "Invalid issuer JSON");
-            response.Warnings.Add($"Invalid issuer JSON: {ex.Message}");
+            response.Warnings.Add("Invalid issuer JSON");
         }
     }
 }
