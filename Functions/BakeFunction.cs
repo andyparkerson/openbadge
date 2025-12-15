@@ -96,7 +96,7 @@ public class BakeFunction
 
             // Publish issuer
             var issuerUrl = await _publishingService.PublishIssuerAsync(
-                issuerId, 
+                issuerId,
                 bakeRequest.Award.Issuer);
 
             // Publish badge class
@@ -105,13 +105,19 @@ public class BakeFunction
                 bakeRequest.Award.BadgeClass,
                 issuerUrl);
 
-            // Generate assertion
-            var (assertionId, assertionJson) = await _emitter.EmitAsync(
+            // Prepare assertion blob name and compute the public blob URI BEFORE emitting
+            var assertionId = Guid.NewGuid().ToString("N");
+            var assertionBlobName = $"assertions/{assertionId}.json";
+            var assertionBlobUri = _publishingService.GetPublicBlobUri(assertionBlobName);
+
+            // Generate assertion using the public blob URI as the assertion id
+            var (generatedAssertionId, assertionJson) = await _emitter.EmitAsync(
                 bakeRequest,
                 new Uri(issuerUrl),
-                new Uri(badgeClassUrl));
+                new Uri(badgeClassUrl),
+                assertionBlobUri);
 
-            // Publish assertion
+            // Publish assertion content to the blob (now that we have the JSON)
             var assertionUrl = await _publishingService.PublishAssertionAsync(
                 assertionId,
                 assertionJson);
