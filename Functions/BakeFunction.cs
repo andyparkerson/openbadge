@@ -117,6 +117,31 @@ public class BakeFunction
                 new Uri(badgeClassUrl),
                 assertionBlobUri);
 
+            // Defensive: if the emitter returned a double-serialized JSON string
+            // (e.g. a JSON string literal with escaped quotes), deserialize it once
+            // so we embed raw JSON into the blob and into the PNG.
+            if (!string.IsNullOrEmpty(assertionJson))
+            {
+                var trimmed = assertionJson.Trim();
+                if (trimmed.Length > 1 && trimmed[0] == '"' && trimmed[^1] == '"')
+                {
+                    try
+                    {
+                        var unwrapped = System.Text.Json.JsonSerializer.Deserialize<string>(trimmed);
+                        if (!string.IsNullOrEmpty(unwrapped))
+                        {
+                            _logger.LogInformation("Detected double-serialized assertion JSON; unwrapping before publish.");
+                            assertionJson = unwrapped;
+                        }
+                    }
+                    catch (System.Text.Json.JsonException)
+                    {
+                        // If deserialize fails, fall back to original string
+                        _logger.LogWarning("Assertion JSON appears quoted but could not be unwrapped; publishing as-is.");
+                    }
+                }
+            }
+
             // Publish assertion content to the blob (now that we have the JSON)
             var assertionUrl = await _publishingService.PublishAssertionAsync(
                 assertionId,
