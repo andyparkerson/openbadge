@@ -59,7 +59,8 @@ public class Ob20Emitter : IStandardEmitter
             ["verification"] = new Dictionary<string, object?>
             {
                 ["type"] = "hosted",
-                ["url"] = assertionUrl.ToString()
+                ["url"] = assertionUrl.ToString(),
+                ["allowedOrigins"] = _baseUrl
             },
             ["issuedOn"] = (award.IssuedOn ?? DateTimeOffset.UtcNow).ToString("o"),
             ["expires"] = award.Expires?.ToString("o"),
