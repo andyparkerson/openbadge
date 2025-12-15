@@ -55,7 +55,7 @@ public class Ob20Emitter : IStandardEmitter
             verification = new
             {
                 type = "HostedBadge",
-                url = issuerUrl.ToString()
+                url = assertionUrl.ToString()
             },
             issuedOn = (award.IssuedOn ?? DateTimeOffset.UtcNow).ToString("o"),
             expires = award.Expires?.ToString("o"),
