@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -40,29 +41,29 @@ public class Ob20Emitter : IStandardEmitter
         var salt = Guid.NewGuid().ToString("N");
         var hashedIdentity = HashEmailWithSalt(recipient.Identity, salt);
 
-        // Build OB 2.0 Assertion object
-        var assertion = new
+        // Build OB 2.0 Assertion object as a dictionary so we can use the "@context" key
+        var assertion = new Dictionary<string, object?>
         {
-            context = "https://w3id.org/openbadges/v2",
-            type = "Assertion",
+            ["@context"] = "https://w3id.org/openbadges/v2",
+            ["type"] = "Assertion",
             // Keep the assertion id as the function endpoint; verification.url points to the blob JSON
-            id = $"{_baseUrl}/api/assertion/{assertionId}",
-            recipient = new
+            ["id"] = $"{_baseUrl}/api/assertion/{assertionId}",
+            ["recipient"] = new Dictionary<string, object?>
             {
-                type = "email",
-                identity = $"sha256${hashedIdentity}",
-                hashed = true,
-                salt = salt
+                ["type"] = "email",
+                ["identity"] = $"sha256${hashedIdentity}",
+                ["hashed"] = true,
+                ["salt"] = salt
             },
-            badge = badgeClassUrl.ToString(),
-            verification = new
+            ["badge"] = badgeClassUrl.ToString(),
+            ["verification"] = new Dictionary<string, object?>
             {
-                type = "hosted",
-                url = assertionUrl.ToString()
+                ["type"] = "hosted",
+                ["url"] = assertionUrl.ToString()
             },
-            issuedOn = (award.IssuedOn ?? DateTimeOffset.UtcNow).ToString("o"),
-            expires = award.Expires?.ToString("o"),
-            evidence = award.Evidence
+            ["issuedOn"] = (award.IssuedOn ?? DateTimeOffset.UtcNow).ToString("o"),
+            ["expires"] = award.Expires?.ToString("o"),
+            ["evidence"] = award.Evidence
         };
 
         // Serialize to JSON (remove null values)
