@@ -57,7 +57,7 @@ public class Ob20Emitter : IStandardEmitter
             badge = badgeClassUrl.ToString(),
             verification = new
             {
-                type = "HostedBadge",
+                type = "hosted",
                 url = assertionUrl.ToString()
             },
             issuedOn = (award.IssuedOn ?? DateTimeOffset.UtcNow).ToString("o"),
