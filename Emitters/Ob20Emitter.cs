@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -25,14 +27,14 @@ public class Ob20Emitter : IStandardEmitter
     public async Task<(string assertionId, string assertionJson)> EmitAsync(
         Models.BakeRequest request,
         Uri issuerUrl,
-        Uri badgeClassUrl)
+        Uri badgeClassUrl,
+        Uri assertionUrl)
     {
         var award = request.Award;
         var recipient = award.Recipient;
 
-        // Generate unique assertion ID
-        var assertionId = Guid.NewGuid().ToString("N");
-        var assertionUrl = $"{_baseUrl}/api/assertion/{assertionId}";
+        // Use the assertion blob name to derive the assertion id (GUID)
+        var assertionId = Path.GetFileNameWithoutExtension(assertionUrl.LocalPath);
 
         // Hash the recipient email with salt for privacy
         var salt = Guid.NewGuid().ToString("N");
@@ -43,7 +45,8 @@ public class Ob20Emitter : IStandardEmitter
         {
             context = "https://w3id.org/openbadges/v2",
             type = "Assertion",
-            id = assertionUrl,
+            // Keep the assertion id as the function endpoint; verification.url points to the blob JSON
+            id = $"{_baseUrl}/api/assertion/{assertionId}",
             recipient = new
             {
                 type = "email",

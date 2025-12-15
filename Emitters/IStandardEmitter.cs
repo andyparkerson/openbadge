@@ -15,5 +15,6 @@ public interface IStandardEmitter
     Task<(string assertionId, string assertionJson)> EmitAsync(
         Models.BakeRequest request,
         Uri issuerUrl,
-        Uri badgeClassUrl);
+        Uri badgeClassUrl,
+        Uri assertionUrl);
 }

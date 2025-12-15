@@ -109,6 +109,17 @@ public class PublishingService
     }
 
     /// <summary>
+    /// Returns the public blob URI for a JSON artifact (without uploading).
+    /// Useful for constructing stable public URLs before publishing the content.
+    /// </summary>
+    public Uri GetPublicBlobUri(string blobName)
+    {
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_publicContainerName);
+        var blobClient = containerClient.GetBlobClient(blobName);
+        return blobClient.Uri;
+    }
+
+    /// <summary>
     /// Stores a baked PNG in private blob storage and returns a SAS URL
     /// </summary>
     public async Task<string> StoreBakedPngAsync(string assertionId, byte[] bakedPng)

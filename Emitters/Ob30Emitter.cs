@@ -19,7 +19,8 @@ public class Ob30Emitter : IStandardEmitter
     public Task<(string assertionId, string assertionJson)> EmitAsync(
         Models.BakeRequest request,
         Uri issuerUrl,
-        Uri badgeClassUrl)
+        Uri badgeClassUrl,
+        Uri assertionUrl)
     {
         _logger.LogWarning("OB 3.0 emitter is not yet implemented");
         
