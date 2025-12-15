@@ -47,7 +47,8 @@ public class Ob20Emitter : IStandardEmitter
             ["@context"] = "https://w3id.org/openbadges/v2",
             ["type"] = "Assertion",
             // Keep the assertion id as the function endpoint; verification.url points to the blob JSON
-            ["id"] = $"{_baseUrl}/api/assertion/{assertionId}",
+            // ["id"] = $"{_baseUrl}/api/assertion/{assertionId}",
+            ["id"] = assertionUrl.ToString(),
             ["recipient"] = new Dictionary<string, object?>
             {
                 ["type"] = "email",
